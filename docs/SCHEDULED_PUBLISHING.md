@@ -17,16 +17,17 @@ Future articles do not have public production routes before their dates. The Ins
 1. Create a private GitHub repository and upload this source code.
 2. Open **Settings → Secrets and variables → Actions**.
 3. Add these repository secrets:
-   - `HOSTINGER_FTP_SERVER`
-   - `HOSTINGER_FTP_USERNAME`
-   - `HOSTINGER_FTP_PASSWORD`
-   - `HOSTINGER_FTP_PATH` with the value `/public_html`
+   - `HOSTINGER_SFTP_HOST`
+   - `HOSTINGER_SFTP_PORT`
+   - `HOSTINGER_SFTP_USERNAME`
+   - `HOSTINGER_SFTP_PASSWORD`
+   - `HOSTINGER_SFTP_PATH` with the value `/public_html`
 4. Keep analytics disabled for now. Do not add a GA4 secret until cookie consent has been implemented.
 5. Open **Actions → Publish scheduled articles → Run workflow** for the first controlled test.
 
 ## Hostinger setup
 
-Create a dedicated FTP account limited to the website hosting account. Use FTPS where Hostinger supports it. Do not use or expose the hPanel login password. The deployment uploads and updates generated website files but deliberately does not delete remote-only folders, so `.private`, `ai` and `preview` remain untouched.
+Enable Hostinger SFTP/SSH remote access and use its dedicated connection details. Do not use or expose the hPanel login password. The deployment uploads and updates generated website files but deliberately does not delete remote-only folders, so `.private`, `ai` and `preview` remain untouched.
 
 ## Operating rules
 

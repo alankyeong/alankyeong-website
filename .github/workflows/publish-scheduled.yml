@@ -39,11 +39,14 @@ jobs:
       - run: pnpm build
       - name: Upload public files without deleting protected subdomains
         env:
-          FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.HOSTINGER_FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
-          FTP_PATH: ${{ secrets.HOSTINGER_FTP_PATH }}
+          SFTP_HOST: ${{ secrets.HOSTINGER_SFTP_HOST }}
+          SFTP_PORT: ${{ secrets.HOSTINGER_SFTP_PORT }}
+          SFTP_USERNAME: ${{ secrets.HOSTINGER_SFTP_USERNAME }}
+          SFTP_PASSWORD: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
+          SFTP_PATH: ${{ secrets.HOSTINGER_SFTP_PATH }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lftp
-          lftp -e "set ftp:ssl-force true; set ssl:verify-certificate true; open -u '$FTP_USERNAME','$FTP_PASSWORD' '$FTP_SERVER'; mirror --reverse --only-newer --parallel=4 --verbose dist/ '$FTP_PATH'; bye"
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "$SFTP_PORT" "$SFTP_HOST" >> ~/.ssh/known_hosts
+          lftp -e "set sftp:connect-program 'ssh -a -x -p $SFTP_PORT -o StrictHostKeyChecking=yes'; open -u '$SFTP_USERNAME','$SFTP_PASSWORD' sftp://$SFTP_HOST; mirror --reverse --only-newer --parallel=4 --verbose dist/ '$SFTP_PATH'; bye"
