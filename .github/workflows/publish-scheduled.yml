@@ -1,0 +1,49 @@
+name: Publish scheduled articles
+
+on:
+  schedule:
+    - cron: '5 1 * * *'
+  workflow_dispatch:
+    inputs:
+      build_time:
+        description: Optional ISO time for a recovery build
+        required: false
+        type: string
+
+concurrency:
+  group: alankyeong-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      PUBLIC_SITE_ENV: production
+      PUBLIC_BUILD_TIME: ${{ inputs.build_time }}
+      PUBLIC_LINKEDIN_URL: https://www.linkedin.com/in/alankyeong
+      PUBLIC_STRIPE_URL: https://buy.stripe.com/cNi9AS7lpf7fa188VqeAg00
+      PUBLIC_AI_SITE_URL: https://ai.alankyeong.com/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate:scheduled
+      - run: pnpm build
+      - name: Upload public files without deleting protected subdomains
+        env:
+          FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          FTP_PATH: ${{ secrets.HOSTINGER_FTP_PATH }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+          lftp -e "set ftp:ssl-force true; set ssl:verify-certificate true; open -u '$FTP_USERNAME','$FTP_PASSWORD' '$FTP_SERVER'; mirror --reverse --only-newer --parallel=4 --verbose dist/ '$FTP_PATH'; bye"

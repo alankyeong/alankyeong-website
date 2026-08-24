@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { isPublishable } from '../../utils/publication';
+const staging = import.meta.env.PUBLIC_SITE_ENV === 'staging';
+const buildTime = import.meta.env.PUBLIC_BUILD_TIME ? new Date(import.meta.env.PUBLIC_BUILD_TIME) : new Date();
+const items = (await getCollection('insights', ({ data }) => staging || isPublishable(data, buildTime)))
+  .sort((a, b) => {
+    const bd = b.data.publishDate || new Date(b.data.publish_at!);
+    const ad = a.data.publishDate || new Date(a.data.publish_at!);
+    return bd.valueOf() - ad.valueOf();
+  });
+---
+<BaseLayout title="Insights on Asian Markets, Consumers and AI | Alan Yeong" description="Articles and perspectives on Asian markets, consumer intelligence, research, commercial strategy and practical AI in business.">
+  <header class="page-hero"><div class="wrap narrow"><p class="eyebrow">Insights</p><h1>Ideas for better-informed decisions</h1><p class="lead">Perspectives on Asian markets, consumer behaviour, research practice, commercial judgement and the responsible use of AI.</p></div></header>
+  <section><div class="wrap insight-grid">{items.map(i => {
+    const description = i.data.description || i.data.excerpt || '';
+    const publishDate = i.data.publishDate || new Date(i.data.publish_at!);
+    const image = i.data.image || i.data.featured_image;
+    const imageAlt = i.data.imageAlt || i.data.featured_image_alt || '';
+    const slug = i.data.slug || i.id;
+    const isDraft = i.data.draft || i.data.status === 'draft';
+    return <article class="insight-card image-insight-card">
+      {image && <a href={`/insights/${slug}/`}><img src={image} alt={imageAlt} width="600" height="400" loading="lazy" decoding="async"></a>}
+      <div class="insight-card-copy"><div class="article-labels"><p class="eyebrow">{i.data.category}</p>{isDraft && <span class="draft-badge">Preview draft</span>}</div><a href={`/insights/${slug}/`}><h2>{i.data.title}</h2></a><p>{description}</p><p class="meta">{publishDate.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</p><a href={`/insights/${slug}/`}>Read insight →</a></div>
+    </article>;
+  })}</div></section>
+</BaseLayout>

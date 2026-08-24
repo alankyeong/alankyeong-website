@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://alankyeong.com/sitemap-index.xml

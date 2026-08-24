@@ -1,0 +1,21 @@
+---
+import { getCollection, render } from 'astro:content';
+import InsightLayout from '../../layouts/InsightLayout.astro';
+import { isPublishable } from '../../utils/publication';
+
+export async function getStaticPaths() {
+  const staging = import.meta.env.PUBLIC_SITE_ENV === 'staging';
+  const buildTime = import.meta.env.PUBLIC_BUILD_TIME ? new Date(import.meta.env.PUBLIC_BUILD_TIME) : new Date();
+  const entries = await getCollection('insights', ({ data }) =>
+    staging || isPublishable(data, buildTime)
+  );
+  return entries.map(entry => ({
+    params: { id: entry.data.slug || entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<InsightLayout entry={entry}><Content/></InsightLayout>

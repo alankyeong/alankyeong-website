@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.env
+.DS_Store
+work/
+outputs/
+preview_dist/
+production_dist/
+build-run-v16/
+node_modules_build*/
+.pnpm-store/
+alan-publishing-package-*/
+image-pilots/
+website-assets/
+clean_zip_base64.txt

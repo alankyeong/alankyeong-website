@@ -1,0 +1,5 @@
+---
+import {nav,site} from '../data/site';
+---
+<header class="site-header"><div class="wrap nav-wrap"><a class="brand" href="/" aria-label="Alan Yeong home">Alan Yeong<span>Asia insight & strategy</span></a><button class="menu" aria-controls="main-nav" aria-expanded="false">Menu</button><nav id="main-nav" aria-label="Primary navigation">{nav.map(([label,url])=><a href={url}>{label}</a>)}<a class="button small" href="/contact/">Discuss a project</a></nav></div></header>
+<script>const b=document.querySelector<HTMLButtonElement>('.menu');const n=document.querySelector<HTMLElement>('#main-nav');b?.addEventListener('click',()=>{const open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));n?.classList.toggle('open',!open)});</script>

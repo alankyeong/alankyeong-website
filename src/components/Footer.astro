@@ -1,0 +1,4 @@
+---
+import {nav,site} from '../data/site';
+---
+<footer><div class="wrap footer-grid"><div><a class="brand light" href="/">Alan Yeong<span>Asia insight & strategy</span></a><p>Asia-focused consumer intelligence and growth advisor connecting evidence, local context and commercial action.</p></div><div><h2>Explore</h2>{nav.map(([l,u])=><a href={u}>{l}</a>)}</div><div><h2>Elsewhere</h2><a href={site.aiUrl} target="_blank" rel="noopener">Dedicated AI website ↗</a>{site.linkedIn!='#'&&<a href={site.linkedIn} target="_blank" rel="noopener">LinkedIn ↗</a>}<a href="/privacy-policy/">Privacy policy</a><a href="/cookie-policy/">Cookie policy</a></div></div><div class="wrap legal">© {new Date().getFullYear()} Alan Yeong. All rights reserved.</div></footer>
