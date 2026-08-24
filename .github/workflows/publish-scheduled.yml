@@ -49,4 +49,4 @@ jobs:
           sudo apt-get install -y -qq lftp
           mkdir -p ~/.ssh
           ssh-keyscan -p "$SFTP_PORT" "$SFTP_HOST" >> ~/.ssh/known_hosts
-          lftp -e "set sftp:connect-program 'ssh -a -x -p $SFTP_PORT -o StrictHostKeyChecking=yes'; open -u '$SFTP_USERNAME','$SFTP_PASSWORD' sftp://$SFTP_HOST; mirror --reverse --only-newer --parallel=4 --verbose dist/ '$SFTP_PATH'; bye"
+          lftp -u "$SFTP_USERNAME","$SFTP_PASSWORD" -e "set sftp:connect-program 'ssh -a -x -p $SFTP_PORT -o StrictHostKeyChecking=yes'; mirror --reverse --only-newer --parallel=4 --verbose dist/ '$SFTP_PATH'; bye" "sftp://$SFTP_HOST"
