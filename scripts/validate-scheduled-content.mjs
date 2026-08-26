@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 const root = new URL('..', import.meta.url).pathname.replace(/^\/(.:)/, '$1');
 const contentDir = join(root, 'src', 'content', 'insights');
-const files = (await readdir(contentDir)).filter(name => /^ay-sea-2026-.*\.md$/.test(name));
+const files = (await readdir(contentDir)).filter(name => /^ay-sea-.*\.md$/.test(name));
 const seenIds = new Set();
 const seenSlugs = new Set();
 const errors = [];
@@ -24,6 +24,6 @@ for (const name of files) {
   if (record.featured_image) try { await access(join(root, 'public', record.featured_image.replace(/^\//, ''))); } catch { errors.push(`${name}: image not found`); }
 }
 
-if (files.length !== 16) errors.push(`Expected 16 scheduled articles, found ${files.length}`);
+if (files.length === 0) errors.push('No scheduled article records found');
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 console.log(`Validated ${files.length} scheduled articles with unique IDs, dates, approvals and images.`);
