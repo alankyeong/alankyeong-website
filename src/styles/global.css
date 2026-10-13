@@ -25,3 +25,6 @@
 .article-labels{display:flex;align-items:center;justify-content:space-between;gap:16px}.article-labels .eyebrow{margin-bottom:0}.draft-badge{display:inline-flex;align-items:center;padding:5px 9px;border:1px solid var(--copper);color:var(--copper);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}.image-insight-card{padding:0;overflow:hidden;border-top:0;border:1px solid var(--border);display:flex;flex-direction:column}.image-insight-card>a:first-child{display:block}.image-insight-card img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}.insight-card-copy{padding:25px;display:flex;flex:1;flex-direction:column}.insight-card-copy h2{font-size:29px;margin-top:16px}.insight-card-copy>p:not(.meta){color:var(--slate)}.insight-card-copy>.meta{margin-top:auto;padding-top:10px}.article-hero{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;background:var(--ivory)}
 @media(max-width:900px){.numbered-process,.lens-grid{grid-template-columns:1fr 1fr}.market-groups{grid-template-columns:1fr}.service-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.numbered-process,.lens-grid{grid-template-columns:1fr}.service-block,.market-group{padding:25px}}
+
+/* Keep CTA button text accessible when buttons appear inside prose blocks. */
+.prose .button{color:#fff}.prose .button.secondary{color:var(--navy)}
