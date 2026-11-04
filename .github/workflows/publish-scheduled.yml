@@ -42,11 +42,13 @@ jobs:
           SFTP_HOST: ${{ secrets.HOSTINGER_SFTP_HOST }}
           SFTP_PORT: ${{ secrets.HOSTINGER_SFTP_PORT }}
           SFTP_USERNAME: ${{ secrets.HOSTINGER_SFTP_USERNAME }}
-          SFTP_PASSWORD: ${{ secrets.HOSTINGER_SFTP_PASSWORD }}
+          SFTP_PRIVATE_KEY: ${{ secrets.HOSTINGER_SFTP_PRIVATE_KEY }}
           SFTP_PATH: ${{ secrets.HOSTINGER_SFTP_PATH }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lftp
           mkdir -p ~/.ssh
+          printf '%s\n' "$SFTP_PRIVATE_KEY" > ~/.ssh/hostinger_deploy_key
+          chmod 600 ~/.ssh/hostinger_deploy_key
           ssh-keyscan -p "$SFTP_PORT" "$SFTP_HOST" >> ~/.ssh/known_hosts
-          lftp -u "$SFTP_USERNAME","$SFTP_PASSWORD" -e "set sftp:connect-program 'ssh -a -x -p $SFTP_PORT -o StrictHostKeyChecking=yes'; mirror --reverse --transfer-all --parallel=4 --verbose dist/ '$SFTP_PATH'; bye" "sftp://$SFTP_HOST"
+          lftp -u "$SFTP_USERNAME","" -e "set sftp:connect-program 'ssh -a -x -i $HOME/.ssh/hostinger_deploy_key -p $SFTP_PORT -o IdentitiesOnly=yes -o PasswordAuthentication=no -o StrictHostKeyChecking=yes'; mirror --reverse --transfer-all --parallel=4 --verbose dist/ '$SFTP_PATH'; bye" "sftp://$SFTP_HOST"
